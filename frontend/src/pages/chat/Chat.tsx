@@ -8,7 +8,7 @@ import rehypeRaw from "rehype-raw";
 import uuid from 'react-uuid';
 
 import styles from "./Chat.module.css";
-import Azure from "../../assets/Azure.svg";
+import Azure from "../../assets/logo.gif";
 
 import {
     ChatMessage,
@@ -69,9 +69,9 @@ const Chat = () => {
 
     useEffect(() => {
         if(appStateContext?.state.isCosmosDBAvailable?.status === CosmosDBStatus.NotWorking && appStateContext.state.chatHistoryLoadingState === ChatHistoryLoadingState.Fail && hideErrorDialog){
-            let subtitle = `${appStateContext.state.isCosmosDBAvailable.status}. Please contact the site administrator.`
+            let subtitle = `${appStateContext.state.isCosmosDBAvailable.status}. サイト管理者にご連絡ください。`
             setErrorMsg({
-                title: "Chat history is not enabled",
+                title: "チャット履歴が有効になっていません",
                 subtitle: subtitle
             })
             toggleErrorDialog();
@@ -84,7 +84,7 @@ const Chat = () => {
             setErrorMsg(null)
         }, 500);
     }
-    
+
     const getUserInfoList = async () => {
         const userInfoList = await getUserInfo();
         if (userInfoList.length === 0 && window.location.hostname !== "127.0.0.1") {
@@ -119,7 +119,7 @@ const Chat = () => {
         }else{
             conversation = appStateContext?.state?.currentChat
             if(!conversation){
-                console.error("Conversation not found.");
+                console.error("会話が見つかりません。");
                 setIsLoading(false);
                 setShowLoadingMessage(false);
                 abortFuncs.current = abortFuncs.current.filter(a => a !== abortController);
@@ -131,7 +131,7 @@ const Chat = () => {
 
         appStateContext?.dispatch({ type: 'UPDATE_CURRENT_CHAT', payload: conversation });
         setMessages(conversation.messages)
-        
+
         const request: ConversationRequest = {
             messages: [...conversation.messages.filter((answer) => answer.role !== "error")]
             // messages: [...conversation.messages.filter((answer) => answer.role === "error")]
@@ -170,10 +170,10 @@ const Chat = () => {
                 appStateContext?.dispatch({ type: 'UPDATE_CURRENT_CHAT', payload: conversation });
                 setMessages([...messages, ...result.choices[0].messages]);
             }
-            
+
         } catch ( e )  {
             if (!abortController.signal.aborted) {
-                let errorMessage = "An error occurred. Please try again. If the problem persists, please contact the site administrator.";
+                let errorMessage = "エラーが発生しました。もう一度お試しください。問題が解決しない場合は、サイト管理者にお問い合わせください。";
                 if (result.error?.message) {
                     errorMessage = result.error.message;
                 }
@@ -221,7 +221,7 @@ const Chat = () => {
         if(conversationId){
             conversation = appStateContext?.state?.chatHistory?.find((conv) => conv.id === conversationId)
             if(!conversation){
-                console.error("Conversation not found.");
+                console.error("会話が見つかりません。");
                 setIsLoading(false);
                 setShowLoadingMessage(false);
                 abortFuncs.current = abortFuncs.current.filter(a => a !== abortController);
@@ -245,14 +245,14 @@ const Chat = () => {
                 let errorChatMsg: ChatMessage = {
                     id: uuid(),
                     role: "error",
-                    content: "There was an error generating a response. Chat history can't be saved at this time. If the problem persists, please contact the site administrator.",
+                    content: "応答を生成するエラーが発生しました。現在、チャット履歴は保存できません。問題が解決しない場合は、サイト管理者にお問い合わせください。",
                     date: new Date().toISOString()
                 }
                 let resultConversation;
                 if(conversationId){
                     resultConversation = appStateContext?.state?.chatHistory?.find((conv) => conv.id === conversationId)
                     if(!resultConversation){
-                        console.error("Conversation not found.");
+                        console.error("会話が見つかりません。");
                         setIsLoading(false);
                         setShowLoadingMessage(false);
                         abortFuncs.current = abortFuncs.current.filter(a => a !== abortController);
@@ -305,7 +305,7 @@ const Chat = () => {
                 if(conversationId){
                     resultConversation = appStateContext?.state?.chatHistory?.find((conv) => conv.id === conversationId)
                     if(!resultConversation){
-                        console.error("Conversation not found.");
+                        console.error("会話が見つかりません。");
                         setIsLoading(false);
                         setShowLoadingMessage(false);
                         abortFuncs.current = abortFuncs.current.filter(a => a !== abortController);
@@ -330,10 +330,10 @@ const Chat = () => {
                 appStateContext?.dispatch({ type: 'UPDATE_CURRENT_CHAT', payload: resultConversation });
                 setMessages([...messages, ...result.choices[0].messages]);
             }
-            
+
         } catch ( e )  {
             if (!abortController.signal.aborted) {
-                let errorMessage = "An error occurred. Please try again. If the problem persists, please contact the site administrator.";
+                let errorMessage = "エラーが発生しました。もう一度お試しください。問題が解決しない場合は、サイト管理者にお問い合わせください。";
                 if (result.error?.message) {
                     errorMessage = result.error.message;
                 }
@@ -350,7 +350,7 @@ const Chat = () => {
                 if(conversationId){
                     resultConversation = appStateContext?.state?.chatHistory?.find((conv) => conv.id === conversationId)
                     if(!resultConversation){
-                        console.error("Conversation not found.");
+                        console.error("会話が見つかりません。");
                         setIsLoading(false);
                         setShowLoadingMessage(false);
                         abortFuncs.current = abortFuncs.current.filter(a => a !== abortController);
@@ -359,7 +359,7 @@ const Chat = () => {
                     resultConversation.messages.push(errorChatMsg);
                 }else{
                     if(!result.history_metadata){
-                        console.error("Error retrieving data.", result);
+                        console.error("データ取得エラー。", result);
                         setIsLoading(false);
                         setShowLoadingMessage(false);
                         abortFuncs.current = abortFuncs.current.filter(a => a !== abortController);
@@ -400,8 +400,8 @@ const Chat = () => {
             let response = await historyClear(appStateContext?.state.currentChat.id)
             if(!response.ok){
                 setErrorMsg({
-                    title: "Error clearing current chat",
-                    subtitle: "Please try again. If the problem persists, please contact the site administrator.",
+                    title: "現在のチャットのクリアエラー",
+                    subtitle: "もう一度お試しください。問題が解決しない場合は、サイト管理者にお問い合わせください。",
                 })
                 toggleErrorDialog();
             }else{
@@ -438,7 +438,7 @@ const Chat = () => {
             setMessages([])
         }
     }, [appStateContext?.state.currentChat]);
-    
+
     useLayoutEffect(() => {
         const saveToDB = async (messages: ChatMessage[], id: string) => {
             const response = await historyUpdate(messages, id)
@@ -448,13 +448,13 @@ const Chat = () => {
         if (appStateContext && appStateContext.state.currentChat && processMessages === messageStatus.Done) {
                 if(appStateContext.state.isCosmosDBAvailable.cosmosDB){
                     if(!appStateContext?.state.currentChat?.messages){
-                        console.error("Failure fetching current chat state.")
-                        return 
+                        console.error("現在のチャット状態の取得に失敗しました。")
+                        return
                     }
                     saveToDB(appStateContext.state.currentChat.messages, appStateContext.state.currentChat.id)
                     .then((res) => {
                         if(!res.ok){
-                            let errorMessage = "An error occurred. Answers can't be saved at this time. If the problem persists, please contact the site administrator.";
+                            let errorMessage = "エラーが発生しました。現在、回答は保存できません。問題が解決しない場合は、サイト管理者にお問い合わせください。";
                             let errorChatMsg: ChatMessage = {
                                 id: uuid(),
                                 role: "error",
@@ -464,7 +464,7 @@ const Chat = () => {
                             if(!appStateContext?.state.currentChat?.messages){
                                 let err: Error = {
                                     ...new Error,
-                                    message: "Failure fetching current chat state."
+                                    message: "現在のチャット状態の取得に失敗しました。"
                                 }
                                 throw err
                             }
@@ -526,9 +526,9 @@ const Chat = () => {
                     <ShieldLockRegular className={styles.chatIcon} style={{color: 'darkorange', height: "200px", width: "200px"}}/>
                     <h1 className={styles.chatEmptyStateTitle}>Authentication Not Configured</h1>
                     <h2 className={styles.chatEmptyStateSubtitle}>
-                        This app does not have authentication configured. Please add an identity provider by finding your app in the 
+                        This app does not have authentication configured. Please add an identity provider by finding your app in the
                         <a href="https://portal.azure.com/" target="_blank"> Azure Portal </a>
-                        and following 
+                        and following
                          <a href="https://learn.microsoft.com/en-us/azure/app-service/scenario-secure-app-authentication-app-service#3-configure-authentication-and-authorization" target="_blank"> these instructions</a>.
                     </h2>
                     <h2 className={styles.chatEmptyStateSubtitle} style={{fontSize: "20px"}}><strong>Authentication configuration takes a few minutes to apply. </strong></h2>
@@ -544,8 +544,8 @@ const Chat = () => {
                                     className={styles.chatIcon}
                                     aria-hidden="true"
                                 />
-                                <h1 className={styles.chatEmptyStateTitle}>Start chatting</h1>
-                                <h2 className={styles.chatEmptyStateSubtitle}>This chatbot is configured to answer your questions</h2>
+                                <h1 className={styles.chatEmptyStateTitle}>チャットを始めましょう！</h1>
+                                <h2 className={styles.chatEmptyStateSubtitle}>質問に答えます。</h2>
                             </Stack>
                         ) : (
                             <div className={styles.chatMessageStream} style={{ marginBottom: isLoading ? "40px" : "0px"}} role="log">
@@ -567,7 +567,7 @@ const Chat = () => {
                                             </div> : answer.role === "error" ? <div className={styles.chatMessageError}>
                                                 <Stack horizontal className={styles.chatMessageErrorContent}>
                                                     <ErrorCircleRegular className={styles.errorIcon} style={{color: "rgba(182, 52, 67, 1)"}} />
-                                                    <span>Error</span>
+                                                    <span>エラー</span>
                                                 </Stack>
                                                 <span className={styles.chatMessageErrorContent}>{answer.content}</span>
                                             </div> : null
@@ -579,7 +579,7 @@ const Chat = () => {
                                         <div className={styles.chatMessageGpt}>
                                             <Answer
                                                 answer={{
-                                                    answer: "Generating answer...",
+                                                    answer: "回答を生成しています...",
                                                     citations: []
                                                 }}
                                                 onCitationClicked={() => null}
@@ -593,7 +593,7 @@ const Chat = () => {
 
                         <Stack horizontal className={styles.chatInput}>
                             {isLoading && (
-                                <Stack 
+                                <Stack
                                     horizontal
                                     className={styles.stopGeneratingContainer}
                                     role="button"
@@ -603,14 +603,14 @@ const Chat = () => {
                                     onKeyDown={e => e.key === "Enter" || e.key === " " ? stopGenerating() : null}
                                     >
                                         <SquareRegular className={styles.stopGeneratingIcon} aria-hidden="true"/>
-                                        <span className={styles.stopGeneratingText} aria-hidden="true">Stop generating</span>
+                                        <span className={styles.stopGeneratingText} aria-hidden="true">回答生成を中断します</span>
                                 </Stack>
                             )}
                             <Stack>
                                 {appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured && <CommandBarButton
                                     role="button"
-                                    styles={{ 
-                                        icon: { 
+                                    styles={{
+                                        icon: {
                                             color: '#FFFFFF',
                                         },
                                         root: {
@@ -629,8 +629,8 @@ const Chat = () => {
                                 />}
                                 <CommandBarButton
                                     role="button"
-                                    styles={{ 
-                                        icon: { 
+                                    styles={{
+                                        icon: {
                                             color: '#FFFFFF',
                                         },
                                         root: {
@@ -655,7 +655,7 @@ const Chat = () => {
                             </Stack>
                             <QuestionInput
                                 clearOnSend
-                                placeholder="Type a new question..."
+                                placeholder="新しい質問を入力してください..."
                                 disabled={isLoading}
                                 onSend={(question, id) => {
                                     appStateContext?.state.isCosmosDBAvailable?.cosmosDB ? makeApiRequestWithCosmosDB(question, id) : makeApiRequestWithoutCosmosDB(question, id)
@@ -671,16 +671,16 @@ const Chat = () => {
                             <IconButton iconProps={{ iconName: 'Cancel'}} aria-label="Close citations panel" onClick={() => setIsCitationPanelOpen(false)}/>
                         </Stack>
                         <h5 className={styles.citationPanelTitle} tabIndex={0}>{activeCitation[2]}</h5>
-                        <div tabIndex={0}> 
-                        <ReactMarkdown 
+                        <div tabIndex={0}>
+                        <ReactMarkdown
                             linkTarget="_blank"
                             className={styles.citationPanelContent}
-                            children={activeCitation[0]} 
-                            remarkPlugins={[remarkGfm]} 
+                            children={activeCitation[0]}
+                            remarkPlugins={[remarkGfm]}
                             rehypePlugins={[rehypeRaw]}
                         />
                         </div>
-                        
+
                     </Stack.Item>
                 )}
                 {(appStateContext?.state.isChatHistoryOpen && appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured) && <ChatHistoryPanel/>}
