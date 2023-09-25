@@ -81,30 +81,30 @@ export const Answer = ({
                                     tabIndex={0}
                                     role="button"
                                 >
-                                <span>{parsedAnswer.citations.length > 1 ? parsedAnswer.citations.length + " references" : "1 reference"}</span>
+                                <span>{`参考資料：${parsedAnswer.citations.length}`}</span>
                                 </Text>
                                 <FontIcon className={styles.accordionIcon}
                                 onClick={handleChevronClick} iconName={chevronIsExpanded ? 'ChevronDown' : 'ChevronRight'}
                                 />
                             </Stack>
-                            
+
                         </Stack>
                     </Stack.Item>
                 )}
                 <Stack.Item className={styles.answerDisclaimerContainer}>
-                    <span className={styles.answerDisclaimer}>AI-generated content may be incorrect</span>
+                    <span className={styles.answerDisclaimer}>AIが生成したコンテンツであるため間違っている可能性があります</span>
                 </Stack.Item>
                 </Stack>
-                {chevronIsExpanded && 
+                {chevronIsExpanded &&
                     <div style={{ marginTop: 8, display: "flex", flexFlow: "wrap column", maxHeight: "150px", gap: "4px" }}>
                         {parsedAnswer.citations.map((citation, idx) => {
                             return (
-                                <span 
-                                    title={createCitationFilepath(citation, ++idx)} 
-                                    tabIndex={0} 
-                                    role="link" 
-                                    key={idx} 
-                                    onClick={() => onCitationClicked(citation)} 
+                                <span
+                                    title={createCitationFilepath(citation, ++idx)}
+                                    tabIndex={0}
+                                    role="link"
+                                    key={idx}
+                                    onClick={() => onCitationClicked(citation)}
                                     onKeyDown={e => e.key === "Enter" || e.key === " " ? onCitationClicked(citation) : null}
                                     className={styles.citationContainer}
                                     aria-label={createCitationFilepath(citation, idx)}
